@@ -3,35 +3,36 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [Header("Bullet Settings")]
-    [SerializeField] private float speed = 20f;      // ความเร็วในการพุ่งของกระสุน
-    [SerializeField] private float damage = 25f;     // ดาเมจที่ทำต่อ Em
-    [SerializeField] private float lifeTime = 3f;    // ระยะเวลาทำลายตัวเองหากยิงไม่โดนอะไรเลย
+    [SerializeField] private float speed = 20f;      // ยครร’รร รรงรรฃยนยกร’รยพรรจยงยขรยงยกรรรรยน
+    [SerializeField] private float damage = 25f;     // ยดร’ร รยจยทร•รจยทร“ยตรจร Em
+    [SerializeField] private float lifeTime = 3f;    // รรรรร รร…ร’ยทร“ร…ร’รยตร‘รร รยงรร’ยกรร”ยงรครรจรขยดยนรรรครร ร…ร
 
     private void Start()
     {
-        // ทำลายกระสุนตัวเองอัตโนมัติหลังผ่านไป 3 วินาที (ป้องกันรกแรม/ซีน)
+        // ยทร“ร…ร’รยกรรรรยนยตร‘รร รยงรร‘ยตรขยนรร‘ยตร”รร…ร‘ยงยผรจร’ยนรคยป 3 รร”ยนร’ยทร• (ยปรฉรยงยกร‘ยนรยกรกรร/ยซร•ยน)
         Destroy(gameObject, lifeTime);
     }
 
     void Update()
     {
-        // ให้กระสุนพุ่งไปข้างหน้า (ตามแกน Z ของตัวมันเอง) ด้วยความเร็วที่กำหนด
+        // รฃรรฉยกรรรรยนยพรรจยงรคยปยขรฉร’ยงรยนรฉร’ (ยตร’รรกยกยน Z ยขรยงยตร‘รรร‘ยนร รยง) ยดรฉรรยครร’รร รรงรยทร•รจยกร“รยนยด
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // ป้องกันกระสุนชนกับตัว Player เอง
+        // ยปรฉรยงยกร‘ยนยกรรรรยนยชยนยกร‘ยบยตร‘ร Player ร รยง
         if (other.CompareTag("Player")) return;
 
-        // ตรวจสอบว่าชนกับวัตถุที่มีเลือด (IDamageable) เช่น Em หรือไม่
+        // ยตรรยจรรยบรรจร’ยชยนยกร‘ยบรร‘ยตยถรยทร•รจรร•ร ร…ร—รยด (IDamageable) ร ยชรจยน Em รรร—รรครรจ
         IDamageable target = other.GetComponent<IDamageable>();
         if (target != null)
         {
-            target.TakeDamage(damage); // สร้างดาเมจให้ Em
+            target.TakeDamage(damage); // รรรฉร’ยงยดร’ร รยจรฃรรฉ Em
         }
 
-        // เมื่อชนกับอะไรก็ตาม (พื้น, กำแพง, หรือ Em) ให้ทำลายกระสุนทิ้งทันที
+        // ร รร—รจรยชยนยกร‘ยบรรรครยกรงยตร’ร (ยพร—รฉยน, ยกร“รกยพยง, รรร—ร Em) รฃรรฉยทร“ร…ร’รยกรรรรยนยทร”รฉยงยทร‘ยนยทร•
         Destroy(gameObject);
     }
-}
+} 
+//Hello world from p'earth
