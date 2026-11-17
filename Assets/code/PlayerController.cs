@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void Start()
     {
+        Time.timeScale = 1f;
         currentHealth = maxHealth;
         currentStamina = maxStamina;
 
@@ -179,6 +180,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         if (gameOverPanel != null)
         {
+            Time.timeScale = 0f;
             gameOverPanel.SetActive(true);
         }
 
