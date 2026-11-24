@@ -28,11 +28,6 @@ public class PauseGame : MainMenu
         }
     }
 
-    public void Restart()
-    {
-        SceneManager.LoadScene("SampleScene");
-    }
-
     public void Back()
     {
         SceneManager.LoadScene("MainMenu");

@@ -102,13 +102,15 @@
 
 
 
-using UnityEngine;
 using System.Collections;
 using TMPro; // นำเข้า TextMeshPro
+using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
     [Header("Gun Settings")]
+    [SerializeField] private AudioClip gunSound;
+    [SerializeField] private AudioClip reloadSound;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 0.2f;
@@ -120,6 +122,7 @@ public class GunController : MonoBehaviour
     [Header("UI Reference")]
     [SerializeField] private TextMeshProUGUI ammoText;   // ลาก AmmoTextUI มาใส่ที่นี่
 
+    private AudioSource audioSource;
     private float nextFireTime = 0f;
     private bool isReloading = false;
 
@@ -129,6 +132,12 @@ public class GunController : MonoBehaviour
         if (firePoint == null) firePoint = transform;
 
         UpdateAmmoUI();
+    }
+
+    void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     void Update()
@@ -159,6 +168,11 @@ public class GunController : MonoBehaviour
         currentAmmo--;
         UpdateAmmoUI(); // อัปเดตตัวเลขทันทีที่ยิง
 
+        if (audioSource != null && gunSound != null)
+        {
+            audioSource.PlayOneShot(gunSound);
+        }
+
         if (bulletPrefab != null && firePoint != null)
         {
             Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
@@ -169,6 +183,11 @@ public class GunController : MonoBehaviour
     {
         isReloading = true;
         if (ammoText != null) ammoText.text = "RELOADING...";
+
+        if (audioSource != null && reloadSound != null)
+        {
+            audioSource.PlayOneShot(reloadSound);
+        }
 
         yield return new WaitForSeconds(reloadTime);
 

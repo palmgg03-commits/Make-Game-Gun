@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
@@ -8,6 +9,12 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float walkSpeed = 3f;
     public float runSpeed = 6f;
     public float rotationSpeed = 15f;
+
+    [Header("Movement Audio")]
+    [SerializeField] private AudioClip walkSound;
+    [SerializeField] private AudioClip runSound;
+    [SerializeField][Range(0f, 1f)] private float walkVolume = 0.6f;
+    [SerializeField][Range(0f, 1f)] private float runVolume = 0.9f;
 
     [Header("Health & UI")]
     [SerializeField] private float maxHealth = 100f;
@@ -25,6 +32,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private bool isExhausted = false;                        // สถานะเหนื่อยหอบ วิ่งชั่วคราวไม่ได้
     [SerializeField] private Slider staminaSlider;           // ลากหลอด Stamina มาใส่ที่นี่
 
+    private AudioSource audioSource;
     private CharacterController controller;
     private Animator animator;
     private Transform camTransform;
@@ -32,6 +40,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float CurrentHealth => currentHealth;
     public float CurrentStamina => currentStamina;
     public float MaxStamina => maxStamina;
+
+    void Awake()
+    {
+        controller = GetComponent<CharacterController>();
+        audioSource = GetComponent<AudioSource>();
+        audioSource.loop = true;
+        audioSource.playOnAwake = false;
+    }
 
     void Start()
     {
@@ -137,6 +153,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             controller.Move(Vector3.down * 9.81f * Time.deltaTime);
         }
 
+        UpdateMovementAudio(isMoving, isRunning);
+
         // 4. ส่งค่าความเร็วไปยัง Animator
         if (animator != null)
         {
@@ -146,6 +164,49 @@ public class PlayerController : MonoBehaviour, IDamageable
                 animSpeedValue = isRunning ? 1.0f : 0.5f;
             }
             animator.SetFloat("Speed", animSpeedValue, 0.1f, Time.deltaTime);
+        }
+    }
+
+    private void UpdateMovementAudio(bool isMoving, bool isRunning)
+    {
+        if (audioSource == null) return;
+
+        // เล่นเสียงเฉพาะตอนเคลื่อนที่และอยู่บนพื้น
+        if (!isMoving || !controller.isGrounded)
+        {
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+            return;
+        }
+
+        AudioClip targetClip = isRunning ? runSound : walkSound;
+        float targetVolume = isRunning ? runVolume : walkVolume;
+
+        if (targetClip == null)
+        {
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+            return;
+        }
+
+        // สลับ Clip เฉพาะตอนเปลี่ยนจากเดินเป็นวิ่ง หรือวิ่งเป็นเดิน เพื่อไม่ให้เสียงกระตุกทุกเฟรม
+        if (audioSource.clip != targetClip)
+        {
+            audioSource.clip = targetClip;
+            audioSource.volume = targetVolume;
+            audioSource.Play();
+        }
+        else
+        {
+            audioSource.volume = targetVolume;
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
         }
     }
 
@@ -172,6 +233,11 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (isDead) return;
         isDead = true;
+
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
 
         if (animator != null)
         {

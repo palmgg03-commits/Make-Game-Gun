@@ -363,6 +363,13 @@ using UnityEngine.AI;
 
 public class EmAI : EmBase, IDamageable
 {
+    [Header("Proximity Sound")]
+    [SerializeField] private AudioClip zombieSound;
+    [SerializeField] private AudioClip attackSound;
+    [SerializeField] private float maxVolume = 1f;
+    [SerializeField][Range(0f, 1f)] private float attackVolume = 1f;
+
+    private AudioSource proximityAudio;
     [Header("Combat Settings")]
     [SerializeField] private float maxHealth = 50f;
     [SerializeField] private float attackDamage = 10f;
@@ -380,6 +387,14 @@ public class EmAI : EmBase, IDamageable
     {
         base.Awake();
         currentHealth = maxHealth;
+
+        //sound
+        proximityAudio = gameObject.AddComponent<AudioSource>();
+        proximityAudio.clip = zombieSound;
+        proximityAudio.loop = true;
+        proximityAudio.playOnAwake = false;
+        proximityAudio.spatialBlend = 0f;
+        proximityAudio.volume = 0f;
     }
 
     void Update()
@@ -387,6 +402,10 @@ public class EmAI : EmBase, IDamageable
         if (isDead || playerTarget == null || emData == null) return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, playerTarget.position);
+        
+
+        //sound
+        UpdateProximitySound(distanceToPlayer);
 
         // ถ้า Player อยู่ในรัศมีตรวจจับ (r = 5)
         if (distanceToPlayer <= emData.DetectRadius)
@@ -442,6 +461,11 @@ public class EmAI : EmBase, IDamageable
         if (Time.time >= lastAttackTime + attackCooldown)
         {
             lastAttackTime = Time.time;
+
+            if (proximityAudio != null && attackSound != null)
+            {
+                proximityAudio.PlayOneShot(attackSound, attackVolume);
+            }
 
             // เล่นอนิเมชันโจมตี (Trigger ใน Animator ชื่อ "Attack")
             if (animator != null)
@@ -572,6 +596,33 @@ public class EmAI : EmBase, IDamageable
             {
                 // สั่งหักเลือด Player ตามดาเมจของ Em
                 playerHealth.TakeDamage(attackDamage);
+                
+            }
+        }
+    }
+    
+    //sound
+    private void UpdateProximitySound(float distanceToPlayer)
+    {
+        if (proximityAudio == null || zombieSound == null) return;
+
+        if (distanceToPlayer <= emData.DetectRadius)
+        {
+            if (!proximityAudio.isPlaying)
+            {
+                proximityAudio.Play();
+            }
+
+            // ดังขึ้นเรื่อยๆ จากขอบ DetectRadius (0%) จนถึง StoppingDistance (100%)
+            float volumeFactor = 1f - Mathf.InverseLerp(emData.StoppingDistance, emData.DetectRadius, distanceToPlayer);
+            proximityAudio.volume = volumeFactor * maxVolume;
+        }
+        else
+        {
+            if (proximityAudio.isPlaying)
+            {
+                proximityAudio.Stop();
+                proximityAudio.volume = 0f;
             }
         }
     }
