@@ -150,7 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   bgmSource: {fileID: 0}
   sfxSource: {fileID: 265517375}
-  volumeSlider: {fileID: 1216570474}
+  volumeSlider: {fileID: 0}
 --- !u!4 &154770188
 Transform:
   m_ObjectHideFlags: 0
@@ -1207,7 +1207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c887319656a31246b5e7deb317283be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenu
-  settingsPanel: {fileID: 1809888341}
+  settingsPanel: {fileID: 0}
   nextLevelIndex: 0
   mission: {fileID: 0}
 --- !u!4 &1273564771

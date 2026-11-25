@@ -7,8 +7,8 @@ public class StaminaController : MonoBehaviour
     [SerializeField] private float maxStamina = 100f;
     [SerializeField] private float currentStamina;
     [SerializeField] private float staminaDrainRate = 20f;   // อัตราการลดลงต่อวินาทีตอนวิ่ง
-    [SerializeField] private float idleRegenRate = 2.0f;     // ยืนอยู่กับที่เพิ่ม 2 หน่วย/วินาที
-    [SerializeField] private float walkRegenRate = 1.0f;     // เดินเพิ่ม 1 หน่วย/วินาที
+    [SerializeField] private float idleRegenRate = 5.0f;     // ยืนอยู่กับที่เพิ่ม 2 หน่วย/วินาที
+    [SerializeField] private float walkRegenRate = 2.0f;     // เดินเพิ่ม 1 หน่วย/วินาที
 
     [Header("UI Reference")]
     [SerializeField] private Slider staminaSlider;           // (ถ้ามี UI หลอดสตามิน่า)

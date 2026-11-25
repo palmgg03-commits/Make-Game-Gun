@@ -153,7 +153,7 @@ public class GunController : MonoBehaviour
         }
 
         // ¤ÅÔ¡«éÒÂÂÔ§
-        if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
+        if (Input.GetButtonDown("Fire1") && Time.time >= nextFireTime)
         {
             if (currentAmmo > 0)
             {
