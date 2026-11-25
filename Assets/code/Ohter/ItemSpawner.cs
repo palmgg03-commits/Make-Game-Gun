@@ -4,9 +4,9 @@ using UnityEngine;
 public class ItemSpawner : MonoBehaviour
 {
     [Header("Item & Spawn Settings")]
-    [SerializeField] private GameObject collectiblePrefab; // ลาก Prefab ของไอเทม (ที่มี CollectibleItem.cs) มาใส่
+    [SerializeField] private  GameObject collectiblePrefab ; // ลาก Prefab ของไอเทม (ที่มี CollectibleItem.cs) มาใส่
     [SerializeField] private List<Transform> spawnPoints = new List<Transform>(); // ลากจุดเกิดทั้งหมดมาใส่
-    [SerializeField] private int spawnCount = 5; // จำนวนไอเทมที่จะสุ่มเกิดในด่านนี้
+    [SerializeField] private int spawnCount = 1; // จำนวนไอเทมที่จะสุ่มเกิดในด่านนี้
     [SerializeField] private float heightOffset = 0.5f; // เผื่อปรับความสูงให้ของลอยอยู่เหนือพื้นพอดี
 
     void Start()
